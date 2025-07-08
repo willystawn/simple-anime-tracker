@@ -1,0 +1,6 @@
+{
+  "name": "My Anime Tracker",
+  "description": "A simple and elegant web application to track the anime you are currently watching. Manage your watchlist, check off episodes, and get new recommendations powered by Gemini.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
