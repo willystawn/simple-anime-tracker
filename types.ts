@@ -9,6 +9,7 @@ export interface Anime {
 }
 
 export enum FilterOption {
+    Active = 'Active',
     All = 'All',
     Watching = 'Watching',
     Completed = 'Completed',

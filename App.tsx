@@ -15,7 +15,7 @@ const App: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [showFormModal, setShowFormModal] = useState(false);
     const [editingAnime, setEditingAnime] = useState<Anime | null>(null);
-    const [filter, setFilter] = useState<FilterOption>(FilterOption.All);
+    const [filter, setFilter] = useState<FilterOption>(FilterOption.Active);
     const [sort, setSort] = useState<SortOption>(SortOption.TitleAZ);
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -161,6 +161,8 @@ const App: React.FC = () => {
                 if (!titleMatch) return false;
 
                 switch (filter) {
+                    case FilterOption.Active:
+                         return anime.watched_episodes.length < anime.total_episodes;
                     case FilterOption.Watching:
                         return anime.watched_episodes.length > 0 && anime.watched_episodes.length < anime.total_episodes;
                     case FilterOption.Completed:
