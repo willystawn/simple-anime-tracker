@@ -14,6 +14,7 @@ A simple and elegant web application to track the anime you are currently watchi
     - Sort your list by `Title (A-Z, Z-A)` or by `Progress`.
 - **Live Search**: Instantly find anime in your watchlist by title.
 - **AI-Powered Recommendations**: Get personalized anime suggestions from Google's Gemini API based on your current list.
+- **Optional Password Protection**: Secure your list with a simple password.
 - **Modern & Responsive UI**: A beautiful dark-mode interface that works seamlessly on desktop and mobile devices.
 - **Persistent Storage**: Your watchlist is saved to a Supabase backend, so you'll never lose your data.
 
@@ -83,6 +84,7 @@ This project is designed to be run in a web development environment that support
     -   `SUPABASE_URL`: Your Supabase project URL.
     -   `SUPABASE_ANON_KEY`: Your Supabase `anon` public key.
     -   `API_KEY`: Your Google Gemini API key.
+    -   `APP_PASSWORD`: (Optional) A password to protect access to your anime tracker. If this variable is not set, the application will be publicly accessible.
 
 2.  **Serve the Files**: Serve the `index.html` and other project files using a static file server. The application will initialize using these environment variables.
 
@@ -90,10 +92,11 @@ This project is designed to be run in a web development environment that support
 
 ## 🕹️ How to Use
 
-1.  **Add an Anime**: Click the "Add Anime" button. Fill in the title, total episodes, and an optional image URL.
-2.  **Track Progress**: On each anime card, click the episode numbers to mark them as watched. The progress bar will update automatically.
-3.  **Edit or Delete**: Hover over an anime card to reveal the edit and delete icons.
-4.  **Get a Recommendation**: Click the "Suggest Anime" button. The app will send your current anime list to the Gemini API and show you a recommendation.
+1.  **Login (if password is set)**: Enter the application password to unlock your tracker.
+2.  **Add an Anime**: Click the "Add Anime" button. Fill in the title, total episodes, and an optional image URL.
+3.  **Track Progress**: On each anime card, click the episode numbers to mark them as watched. The progress bar will update automatically.
+4.  **Edit or Delete**: Hover over an anime card to reveal the edit and delete icons.
+5.  **Get a Recommendation**: Click the "Suggest Anime" button. The app will send your current anime list to the Gemini API and show you a recommendation.
 
 ## 📄 License
 

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from './services/supabase';
 import { getAnimeRecommendation } from './services/geminiService';
@@ -5,9 +6,11 @@ import { Anime, SortOption, FilterOption, Recommendation } from './types';
 import AnimeCard from './components/AnimeCard';
 import AnimeForm from './components/AnimeForm';
 import Header from './components/Header';
+import ControlsBar from './components/ControlsBar';
 import LoadingSpinner from './components/LoadingSpinner';
 import RecommendationModal from './components/RecommendationModal';
 import { FolderIcon } from './components/Icons';
+import LoginScreen from './components/LoginScreen';
 
 const App: React.FC = () => {
     const [animes, setAnimes] = useState<Anime[]>([]);
@@ -21,6 +24,10 @@ const App: React.FC = () => {
 
     const [recommendation, setRecommendation] = useState<Recommendation | null>(null);
     const [isRecommending, setIsRecommending] = useState(false);
+
+    const appPassword = import.meta.env.VITE_APP_PASSWORD;
+    const [isAuthenticated, setIsAuthenticated] = useState(!appPassword);
+    const [loginError, setLoginError] = useState<string | null>(null);
 
     const fetchAnimes = useCallback(async () => {
         if (!supabase) return;
@@ -41,12 +48,22 @@ const App: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        if (isSupabaseConfigured) {
+        if (isSupabaseConfigured && isAuthenticated) {
             fetchAnimes();
-        } else {
+        } else if (!isSupabaseConfigured) {
             setLoading(false);
         }
-    }, [fetchAnimes]);
+    }, [fetchAnimes, isAuthenticated]);
+
+    const handleLogin = (password: string) => {
+        if (password === appPassword) {
+            setIsAuthenticated(true);
+            setLoginError(null);
+        } else {
+            setLoginError("Incorrect password. Please try again.");
+            // Optional: clear password field on error
+        }
+    };
 
     const handleFormSubmit = async (formData: Omit<Anime, 'created_at' | 'watched_episodes'> & { id?: string }) => {
         if (!supabase) return;
@@ -208,6 +225,10 @@ const App: React.FC = () => {
         );
     }
 
+    if (!isAuthenticated) {
+        return <LoginScreen onLogin={handleLogin} error={loginError} />;
+    }
+
 
     return (
         <div className="min-h-screen bg-primary font-sans">
@@ -215,16 +236,19 @@ const App: React.FC = () => {
                 onAddAnime={handleOpenAddForm}
                 onGetRecommendation={handleGetRecommendation}
                 isRecommending={isRecommending}
-                filter={filter}
-                setFilter={setFilter}
-                sort={sort}
-                setSort={setSort}
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
             />
 
             <main className="container mx-auto p-4 md:p-8">
-                {loading && <div className="flex justify-center mt-24"><LoadingSpinner /></div>}
+                <ControlsBar
+                    filter={filter}
+                    setFilter={setFilter}
+                    sort={sort}
+                    setSort={setSort}
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                />
+
+                {loading && <div className="flex justify-center mt-16"><LoadingSpinner /></div>}
                 
                 {error && (
                     <div className="text-center text-red-400 bg-secondary/50 border border-red-800 p-4 rounded-lg my-4 max-w-2xl mx-auto">
@@ -234,7 +258,7 @@ const App: React.FC = () => {
                 )}
 
                 {!loading && filteredAndSortedAnimes.length === 0 && !error && (
-                     <div className="text-center text-light-gray mt-24 flex flex-col items-center">
+                     <div className="text-center text-light-gray mt-16 flex flex-col items-center">
                         <FolderIcon className="h-24 w-24 text-gray-700 mb-4" />
                         <h2 className="text-2xl font-bold text-off-white">Your Watchlist is Empty</h2>
                         <p className="mt-2 max-w-md">Looks like you haven't added any anime yet. Click the "Add Anime" button to get started!</p>
